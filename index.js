@@ -44,7 +44,10 @@ app.get("/api/shorturl/:shorturl?", async (req, res) => {
 
   try {
     const data = await findUrlByProperty(shortUrl, "shortUrl");
-    res.json(data);
+    if (!data) {
+      res.status(404).json({ error: "No short URL found for the given input" });
+    }
+    res.redirect(data.original_url);
   } catch (err) {
     console.error("get", err);
     returnError(res);
