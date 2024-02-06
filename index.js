@@ -24,31 +24,31 @@ app.get("/api/hello", function (req, res) {
 
 app.post("/api/shorturl", async (req, res) => {
   const longUrl = req?.body?.url;
-  if (!longUrl) res.status(400).json({ error: "invalid url" });
+  if (!longUrl) res.json({ error: "invalid url" });
   try {
     checkUrl(longUrl);
     const data = await createAndSaveShortUrl(longUrl);
     res.json(data);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.json({ error: err.message });
   }
 });
 
 app.get("/api/shorturl/:shorturl?", async (req, res) => {
   const shortUrl = req.url.split("shorturl/")[1];
   // If doesn't exist
-  if (!shortUrl) return res.status(404).send("Not found");
+  if (!shortUrl) return res.send("Not found");
   // If not a number
-  if (!Number(shortUrl)) return res.status(400).json({ error: "Wrong format" });
+  if (!Number(shortUrl)) return res.json({ error: "Wrong format" });
 
   try {
     const data = await findUrlByProperty(shortUrl, "shortUrl");
     if (!data) {
-      res.status(404).json({ error: "No short URL found for the given input" });
+      res.json({ error: "No short URL found for the given input" });
     }
     res.redirect(data.original_url);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.json({ error: err.message });
   }
 });
 

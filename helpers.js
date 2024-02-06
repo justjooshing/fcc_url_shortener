@@ -3,8 +3,11 @@ const checkUrl = (string) => {
 
   try {
     url = new URL(string);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      throw new Error("invalid url");
+    }
   } catch (error) {
-    throw error;
+    throw new Error("invalid url");
   }
   return url.href;
 };
