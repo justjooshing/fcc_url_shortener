@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 const { findUrlByProperty, createAndSaveShortUrl } = require("./mongoose");
-const { checkUrl, returnError } = require("./helpers");
+const { checkUrl } = require("./helpers");
 // Basic Configuration
 const port = process.env.PORT || 3000;
 
@@ -24,14 +24,13 @@ app.get("/api/hello", function (req, res) {
 
 app.post("/api/shorturl", async (req, res) => {
   const longUrl = req?.body?.url;
-  if (!longUrl) returnError(res);
+  if (!longUrl) res.status(400).json({ error: "invalid url" });
   try {
     checkUrl(longUrl);
     const data = await createAndSaveShortUrl(longUrl);
     res.json(data);
   } catch (err) {
-    console.error("post", err);
-    returnError(res);
+    res.status(400).json({ error: err.message });
   }
 });
 
@@ -49,18 +48,9 @@ app.get("/api/shorturl/:shorturl?", async (req, res) => {
     }
     res.redirect(data.original_url);
   } catch (err) {
-    console.error("get", err);
-    returnError(res);
+    res.status(400).json({ error: err.message });
   }
 });
-
-/**
-You can POST a URL to /api/shorturl and get a JSON response with original_url and short_url properties. 
-  Here's an example: { original_url : 'https://freeCodeCamp.org', short_url : 1}
-When you visit /api/shorturl/<short_url>, you will be redirected to the original URL.
-If you pass an invalid URL that doesn't follow the valid http://www.example.com format, 
- the JSON response will contain { error: 'invalid url' }
- */
 
 app.listen(port, function () {
   console.log(`Listening on port ${port}`);

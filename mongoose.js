@@ -22,28 +22,27 @@ const findUrlByProperty = async (url, property) => {
     // don't strip if null
     return data ? stripDetails(data) : data;
   } catch (err) {
-    console.error({ err });
-    return;
+    throw err;
   }
 };
 
 const createAndSaveShortUrl = async (url) => {
-  let data;
-  data = await findUrlByProperty(url, "longUrl");
-  if (data) {
-    // already stripped
-    return data;
-  } else {
-    try {
+  try {
+    const data = await findUrlByProperty(url, "longUrl");
+    // already exists in db
+    if (data) {
+      // already stripped
+      return data;
+    } else {
       const count = await URL.countDocuments();
       const savedEntry = await URL.create({
         longUrl: url,
         shortUrl: count + 1,
       });
       return stripDetails(savedEntry);
-    } catch (err) {
-      console.error(err);
     }
+  } catch (err) {
+    throw err;
   }
 };
 

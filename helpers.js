@@ -1,4 +1,3 @@
-const returnError = (res) => res.status(400).json({ error: "invalid url" });
 const checkUrl = (string) => {
   let url;
 
@@ -15,4 +14,4 @@ const stripDetails = ({ longUrl, shortUrl }) => ({
   short_url: shortUrl,
 });
 
-module.exports = { returnError, checkUrl, stripDetails };
+module.exports = { checkUrl, stripDetails };
