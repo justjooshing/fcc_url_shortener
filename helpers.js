@@ -12,7 +12,7 @@ const checkUrl = (string) => {
 
 const stripDetails = ({ longUrl, shortUrl }) => ({
   original_url: longUrl,
-  shortUrl,
+  short_url: shortUrl,
 });
 
 module.exports = { returnError, checkUrl, stripDetails };
